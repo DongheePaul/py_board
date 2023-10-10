@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h5 class="my-3 border-bottom pb-2">질문등록</h5>
+    <form method="post">
+        {% csrf_token %}
+        <!--form.as_p의 form은 question_create함수에서 전달한 QuestionForm의 객체.-->
+        <!--{{form.as_p}}는 폼에 정의한 subject, content 속성에 해당하는 html 코드(<p>)를 자동으로 생성한다.-->
+        <!-- question_create함수에서 form.is_valid()가 실패할 경우 발생하는 오류의 내용 출력. -->
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+            {% if field.errors %}
+            <div>
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <!-- 오류표시 End -->
+        <div class="mb-3">
+            <label for="subject" class="form-label">제목</label>
+            <!--value 속성 내용 : 오류가 발생했을 경우 기존에 입력했던 값을 유지. 그리고 값이 없을 경우 문자열 None 대신 공백으로 표시-->
+            <input type="text" class="form-control" name="subject" id="subject"
+                   value="{{ form.subject.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">내용</label>
+            <textarea class="form-control" name="content"
+                      id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">저장하기</button>
+    </form>
+</div>
+{% endblock %}
